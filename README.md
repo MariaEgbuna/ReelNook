@@ -111,7 +111,7 @@ Problems I ran into and how I solved them:
 ## Known limits and ideas
 
 - The watchlist is saved per browser and device. A version with accounts and a database would fix that.
-- Ideas for later: footer, manual light/dark toggle, genre filter, search-as-you-type, TV shows.
+- Ideas for later: manual light/dark toggle, genre filter, search-as-you-type, TV shows.
 
 ## Credits
 

@@ -39,7 +39,8 @@ export default async function MoviePage({
               fill
               sizes="(min-width: 768px) 288px, 100vw"
               className="object-cover"
-              priority
+              loading="eager"
+              fetchPriority="high"
             />
           )}
         </div>

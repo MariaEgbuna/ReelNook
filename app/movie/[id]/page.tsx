@@ -1,3 +1,5 @@
+import { getSession } from "@/lib/session";
+import { isInWatchlist } from "@/lib/watchlist-queries";
 import { notFound } from "next/navigation";
 import WatchlistButton from "@/components/WatchlistButton";
 import Image from "next/image";
@@ -14,6 +16,10 @@ export default async function MoviePage({
 
   const movie = await getMovieDetails(id);
   if (!movie) notFound();
+  const session = await getSession();
+  const initialSaved = session
+  ? await isInWatchlist(session.user.id, movie.id)
+  : false;
 
   const year = movie.release_date?.slice(0, 4);
   const trailer = movie.videos.results.find(
@@ -39,7 +45,8 @@ export default async function MoviePage({
               fill
               sizes="(min-width: 768px) 288px, 100vw"
               className="object-cover"
-              priority
+              loading="eager"
+              fetchPriority="high"
             />
           )}
         </div>
@@ -76,6 +83,8 @@ export default async function MoviePage({
                 release_date: movie.release_date,
                 vote_average: movie.vote_average,
               }}
+              signedIn={!!session}
+              initialSaved={initialSaved}
             />
           </div>
 

@@ -1,17 +1,20 @@
-"use client";
-
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import MovieGrid from "@/components/MovieGrid";
-import { useWatchlist } from "@/lib/watchlist";
+import { getSession } from "@/lib/session";
+import { getWatchlist } from "@/lib/watchlist-queries";
 
-export default function WatchlistPage() {
-  const list = useWatchlist();
+export default async function WatchlistPage() {
+  const session = await getSession();
+  if (!session) redirect("/sign-in");
+
+  const movies = await getWatchlist(session.user.id);
 
   return (
     <main className="mx-auto max-w-6xl p-6">
       <h1 className="mb-6 text-2xl font-bold">My Watchlist</h1>
 
-      {list === null ? null : list.length === 0 ? (
+      {movies.length === 0 ? (
         <p className="text-muted">
           Your watchlist is empty.{" "}
           <Link href="/" className="underline hover:text-foreground">
@@ -19,7 +22,7 @@ export default function WatchlistPage() {
           </Link>
         </p>
       ) : (
-        <MovieGrid movies={list} />
+        <MovieGrid movies={movies} />
       )}
     </main>
   );

@@ -2,7 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Movie } from "@/lib/tmdb";
 
-export default function MovieCard({ movie }: { movie: Movie }) {
+export default function MovieCard({
+  movie,
+  eager = false,
+}: {
+  movie: Movie;
+  eager?: boolean;
+}) {
   const year = movie.release_date?.slice(0, 4);
 
   return (
@@ -18,6 +24,7 @@ export default function MovieCard({ movie }: { movie: Movie }) {
             fill
             sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, 50vw"
             className="object-cover"
+            loading={eager ? "eager" : "lazy"}
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-muted">

@@ -1,22 +1,10 @@
-"use client";
+import { getSession } from "@/lib/session";
+import { getWatchlistCount } from "@/lib/watchlist-queries";
+import HeaderNav from "@/components/HeaderNav";
 
-import Link from "next/link";
-import { useWatchlist } from "@/lib/watchlist";
+export default async function Header() {
+  const session = await getSession();
+  const count = session ? await getWatchlistCount(session.user.id) : 0;
 
-export default function Header() {
-  const list = useWatchlist();
-  const count = list?.length ?? 0;
-
-  return (
-    <header className="border-b border-line">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between p-4">
-        <Link href="/" className="text-lg font-bold text-foreground">
-          🎬 Movie App
-        </Link>
-        <Link href="/watchlist" className="text-soft hover:text-foreground">
-          Watchlist{count > 0 ? ` (${count})` : ""}
-        </Link>
-      </nav>
-    </header>
-  );
+  return <HeaderNav userName={session?.user.name ?? null} count={count} />;
 }

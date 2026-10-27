@@ -30,7 +30,11 @@ export default function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         : await authClient.signIn.email({ email, password });
 
       if (error) {
-        setError(error.message ?? "Something went wrong. Please try again.");
+        if (error.status === 429) {
+          setError("Too many attempts. Please wait a moment and try again.");
+        } else {
+          setError(error.message ?? "Something went wrong. Please try again.");
+        }
         return;
       }
 

@@ -1,6 +1,6 @@
-# Movie App
+# ReelNook
 
-A movie discovery app where you can browse what's trending, search for any movie, watch trailers, see the cast, get a random pick for tonight, and sign in to keep a personal watchlist that is saved in a database.
+**ReelNook** is a movie discovery app where you can browse what's trending, search for any movie, watch trailers, see the cast, get a random pick for tonight, and sign in to keep a personal watchlist that is saved in a database.
 
 ![Home page](docs/screenshots/home.png)
 
@@ -55,8 +55,8 @@ You need:
 **1. Clone and install**
 
 ```bash
-git clone https://github.com/MariaEgbuna/movie-app.git
-cd movie-app
+git clone https://github.com/MariaEgbuna/ReelNook.git
+cd ReelNook
 npm install
 ```
 

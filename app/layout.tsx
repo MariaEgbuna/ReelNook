@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Movie App",
-  description: "Search trending movies, watch trailers, and save a watchlist.",
+  title: "ReelNook",
+  description:
+    "Find your next movie: trending titles, trailers, cast, a random pick, and a personal watchlist.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

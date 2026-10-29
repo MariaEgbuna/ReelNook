@@ -25,10 +25,10 @@ export default function HeaderNav({
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 p-4">
         <Link
           href="/"
-          aria-label="Movie App home"
+          aria-label="ReelNook home"
           className="shrink-0 text-lg font-bold whitespace-nowrap text-foreground"
         >
-          🎬<span className="hidden sm:inline"> Movie App</span>
+          🎬<span className="hidden sm:inline"> ReelNook</span>
         </Link>
 
         <div className="flex items-center gap-3 text-sm whitespace-nowrap sm:gap-4 sm:text-base">

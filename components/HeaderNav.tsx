@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ReelLogo from "@/components/ReelLogo";
 import { authClient } from "@/lib/auth-client";
 
 export default function HeaderNav({
@@ -26,9 +27,10 @@ export default function HeaderNav({
         <Link
           href="/"
           aria-label="ReelNook home"
-          className="shrink-0 text-lg font-bold whitespace-nowrap text-foreground"
+          className="flex shrink-0 items-center gap-2 text-lg font-bold whitespace-nowrap text-foreground"
         >
-          🎬<span className="hidden sm:inline"> ReelNook</span>
+          <ReelLogo />
+          <span className="hidden sm:inline">ReelNook</span>
         </Link>
 
         <div className="flex items-center gap-3 text-sm whitespace-nowrap sm:gap-4 sm:text-base">

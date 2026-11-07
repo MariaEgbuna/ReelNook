@@ -8,7 +8,7 @@ export const auth = betterAuth({
   emailAndPassword: { enabled: true },
   rateLimit: {
     enabled: true,
-    storage: "memory",
+    storage: "database",
   },
   plugins: [nextCookies()],
 });

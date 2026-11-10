@@ -1,4 +1,4 @@
-import { and, count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 import { db } from "./db";
 import { watchlistItem } from "../db/watchlist-schema";
 import type { Movie } from "./tmdb";
@@ -55,4 +55,33 @@ export async function getWatchlistCount(userId: string): Promise<number> {
     );
 
   return row?.value ?? 0;
+}
+
+export async function getWatchedIds(userId: string): Promise<Set<number>> {
+  const rows = await db
+    .select({ movieId: watchlistItem.movieId })
+    .from(watchlistItem)
+    .where(
+      and(eq(watchlistItem.userId, userId), eq(watchlistItem.status, "watched"))
+    );
+
+  return new Set(rows.map((row) => row.movieId));
+}
+
+export async function getRandomWatchlistMovieId(
+  userId: string
+): Promise<number | null> {
+  const [row] = await db
+    .select({ movieId: watchlistItem.movieId })
+    .from(watchlistItem)
+    .where(
+      and(
+        eq(watchlistItem.userId, userId),
+        eq(watchlistItem.status, "to_watch")
+      )
+    )
+    .orderBy(sql`random()`)
+    .limit(1);
+
+  return row?.movieId ?? null;
 }

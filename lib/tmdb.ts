@@ -92,12 +92,20 @@ export async function getMovieDetails(id: string): Promise<MovieDetails | null> 
   }
 }
 
-export async function getRandomMovie(): Promise<Movie | null> {
-  const page = Math.floor(Math.random() * 10) + 1;
-  const data = await tmdbFetch<{ results: Movie[] }>(
-    `/movie/top_rated?page=${page}`
-  );
+export async function getRandomMovie(
+  exclude: Set<number> = new Set()
+): Promise<Movie | null> {
+  // A few tries, in case a whole page has been watched already
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const page = Math.floor(Math.random() * 10) + 1;
+    const data = await tmdbFetch<{ results: Movie[] }>(
+      `/movie/top_rated?page=${page}`
+    );
 
-  if (data.results.length === 0) return null;
-  return data.results[Math.floor(Math.random() * data.results.length)];
+    const candidates = data.results.filter((movie) => !exclude.has(movie.id));
+    if (candidates.length > 0) {
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+  }
+  return null;
 }

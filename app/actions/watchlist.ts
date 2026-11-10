@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/session";
 import { watchlistItem } from "@/db/watchlist-schema";
+import type { WatchStatus } from "@/lib/watch-status";
 
 type SetResult =
-  | { ok: true; saved: boolean }
+  | { ok: true; status: WatchStatus | null }
   | { ok: false; error: string };
 
 type MovieInput = {
@@ -49,9 +50,16 @@ function parseMovie(input: unknown): MovieInput | null {
   return { id, title, poster_path, release_date, vote_average };
 }
 
-export async function setInWatchlist(
+// Returns the status, null (meaning "remove"), or undefined if the input is invalid
+function parseStatus(input: unknown): WatchStatus | null | undefined {
+  if (input === null) return null;
+  if (input === "to_watch" || input === "watched") return input;
+  return undefined;
+}
+
+export async function setWatchStatus(
   input: unknown,
-  shouldSave: boolean
+  statusInput: unknown
 ): Promise<SetResult> {
   const session = await getSession();
   if (!session) {
@@ -59,7 +67,8 @@ export async function setInWatchlist(
   }
 
   const movie = parseMovie(input);
-  if (!movie) {
+  const status = parseStatus(statusInput);
+  if (!movie || status === undefined) {
     return { ok: false, error: "That movie could not be saved." };
   }
 
@@ -67,7 +76,16 @@ export async function setInWatchlist(
   const userId = session.user.id;
 
   try {
-    if (shouldSave) {
+    if (status === null) {
+      await db
+        .delete(watchlistItem)
+        .where(
+          and(
+            eq(watchlistItem.userId, userId),
+            eq(watchlistItem.movieId, movie.id)
+          )
+        );
+    } else {
       await db
         .insert(watchlistItem)
         .values({
@@ -77,21 +95,16 @@ export async function setInWatchlist(
           posterPath: movie.poster_path,
           releaseDate: movie.release_date,
           voteAverage: movie.vote_average,
+          status,
         })
-        .onConflictDoNothing();
-    } else {
-      await db
-        .delete(watchlistItem)
-        .where(
-          and(
-            eq(watchlistItem.userId, userId),
-            eq(watchlistItem.movieId, movie.id)
-          )
-        );
+        .onConflictDoUpdate({
+          target: [watchlistItem.userId, watchlistItem.movieId],
+          set: { status },
+        });
     }
 
     revalidatePath("/", "layout");
-    return { ok: true, saved: shouldSave };
+    return { ok: true, status };
   } catch {
     return {
       ok: false,

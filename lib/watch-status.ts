@@ -1,0 +1,1 @@
+export type WatchStatus = "to_watch" | "watched";
